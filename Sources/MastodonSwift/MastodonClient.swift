@@ -92,13 +92,14 @@ public class MastodonClientAuthenticated: MastodonClientProtocol {
         return try JSONDecoder().decode([Status].self, from: data)
     }
 
-    public func getPublicTimeline(isLocal: Bool = false,
+	public func getPublicTimeline(isLocal: Bool = false,
+								  onlyMedia: Bool = false,
                                   maxId: StatusId? = nil,
                                   sinceId: StatusId? = nil) async throws -> [Status] {
 
         let request = try Self.request(
             for: baseURL,
-            target: Mastodon.Timelines.pub(isLocal, maxId, sinceId),
+            target: Mastodon.Timelines.pub(isLocal, onlyMedia, maxId, sinceId),
             withBearerToken: token
         )
         
@@ -108,13 +109,14 @@ public class MastodonClientAuthenticated: MastodonClientProtocol {
     }
 
     public func getTagTimeline(tag: String,
-                               isLocal: Bool = false,
+							   isLocal: Bool = false,
+							   onlyMedia: Bool = false,
                                maxId: StatusId? = nil,
                                sinceId: StatusId? = nil) async throws -> [Status] {
 
         let request = try Self.request(
             for: baseURL,
-            target: Mastodon.Timelines.tag(tag, isLocal, maxId, sinceId),
+			target: Mastodon.Timelines.tag(tag, isLocal, onlyMedia, maxId, sinceId),
             withBearerToken: token
         )
         

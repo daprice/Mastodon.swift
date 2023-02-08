@@ -8,8 +8,8 @@ public typealias Limit = Int
 extension Mastodon {
     public enum Timelines {
         case home(MaxId?, SinceId?, MinId?, Limit?)
-        case pub(Bool, MaxId?, SinceId?) // Bool = local
-        case tag(String, Bool, MaxId?, SinceId?) // Bool = local
+        case pub(Bool, Bool, MaxId?, SinceId?) // Bool = local, Bool(2) = onlyMedia
+        case tag(String, Bool, Bool, MaxId?, SinceId?) // Bool = local, Bool(2) = onlyMedia
     }
 }
 
@@ -23,7 +23,7 @@ extension Mastodon.Timelines: TargetType {
             return "\(apiPath)/home"
         case .pub:
             return "\(apiPath)/public"
-        case .tag(let hashtag, _, _, _):
+        case .tag(let hashtag, _, _, _, _):
             return "\(apiPath)/tag/\(hashtag)"
         }
     }
@@ -44,13 +44,15 @@ extension Mastodon.Timelines: TargetType {
         var sinceId: SinceId? = nil
         var minId: MinId? = nil
         var limit: Limit? = nil
+		var onlyMedia: Bool? = nil
 
         switch self {
-        case .tag(_, let _local, let _maxId, let _sinceId),
-             .pub(let _local, let _maxId, let _sinceId):
+        case .tag(_, let _local, let _onlyMedia, let _maxId, let _sinceId),
+             .pub(let _local, let _onlyMedia, let _maxId, let _sinceId):
             local = _local
             maxId = _maxId
             sinceId = _sinceId
+			onlyMedia = _onlyMedia
         case .home(let _maxId, let _sinceId, let _minId, let _limit):
             maxId = _maxId
             sinceId = _sinceId
@@ -73,6 +75,9 @@ extension Mastodon.Timelines: TargetType {
         if let local = local {
             params.append(("local", local.asString))
         }
+		if let onlyMedia = onlyMedia {
+			params.append(("only_media", onlyMedia.asString))
+		}
         return params
     }
     
