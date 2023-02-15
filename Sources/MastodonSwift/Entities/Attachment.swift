@@ -8,6 +8,15 @@ public struct Attachment: Codable {
         case video      = "video"
         case audio      = "audio"
     }
+	
+	public struct AttachmentMeta: Codable {
+		public let focus: AttachmentFocus?
+		
+		public struct AttachmentFocus: Codable {
+			public let x: Double
+			public let y: Double
+		}
+	}
     
     public let id: String
     public let type: AttachmentType
@@ -17,6 +26,8 @@ public struct Attachment: Codable {
     public let remoteUrl: URL?
     public let description: String?
     public let blurhash: String?
+	
+	public let meta: AttachmentMeta?
 
     private enum CodingKeys: String, CodingKey {
         case id
@@ -27,5 +38,7 @@ public struct Attachment: Codable {
         case remoteUrl = "remote_url"
         case description
         case blurhash
+		
+		case meta
     }
 }
